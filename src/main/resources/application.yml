@@ -1,0 +1,52 @@
+logging:
+  level:
+    org:
+      hibernate:
+        type: trace
+    study:
+      testproject: debug
+server:
+  port: 8081
+spring:
+  config:
+    activate: 
+      on-profile: local  
+  datasource:
+    url: jdbc:postgresql://localhost:5432/etl?options=-c%20search_path=testproject
+    username: postgres
+    password: 1234
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties.hibernate.format_sql: true
+  thymeleaf:
+    cache: false
+  devtools.livereload.enabled: true
+
+---
+logging:
+  level:
+    org:
+      hibernate:
+        type: trace
+    study:
+      testproject: debug
+server:
+  port: 8081
+spring:
+  config:
+    activate: 
+      on-profile: test  
+  datasource:
+    url: jdbc:postgresql://localhost:5432/etl?options=-c%20search_path=testproject
+    username: postgres
+    password: 1234
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties.hibernate.format_sql: true
+  thymeleaf:
+    cache: false
+  devtools.livereload.enabled: true
