@@ -1,0 +1,27 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:fragment="headerFragment">
+	<header class="navbar sticky-top flex-md-nowrap p-0 shadow navbar-custom">
+		<div class="logo-box">
+			<a th:href="@{/index}" class="logo text-center"><img th:src="@{/images/logo-light.png}" alt="" height="24"></a>
+		</div>
+		<div class="float-end me-5 text-white" sec:authorize="isAuthenticated()">
+            <form th:action="@{/logout}" method="post" class="row align-items-center">
+				<div class="col-auto p-1 mt-2">
+					<i class="ri-user-line h3"></i>
+				</div>
+				<div class="col-auto p-0">
+					<span sec:authentication="principal.username"></span>
+				</div>
+                <div class="col-auto ps-4">
+                    <a class="dropdown-item" th:href="@{/change-password}">Password</a>
+                </div>
+				<div class="col-auto ps-4">
+					<button class="dropdown-item" type="submit">Logout</button>
+				</div>
+            </form>
+		</div>
+	</header>
+</th:block>
+
+</html>

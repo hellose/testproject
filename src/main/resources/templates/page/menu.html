@@ -1,0 +1,115 @@
+<!doctype html>
+<!-- <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"> -->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Menu</title>
+
+  <link rel="icon" href="data:,">
+
+  <!-- 이 영역에 공통으로 사용할 css, js library를 선언한다. -->
+  <script type="text/javascript" th:src="@{/bootstrap-5.2.3-dist/js/bootstrap.bundle.min.js}"></script>
+  <link rel="stylesheet" th:href="@{/bootstrap-5.2.3-dist/css/bootstrap.min.css}" />
+  <script type="text/javascript" th:src="@{/js/sweetalert2/sweetalert2.js}"></script>
+  <link rel="stylesheet" th:href="@{/js/sweetalert2/sweetalert2.css}" />
+  <script type="importmap">
+{
+	"imports": {
+		"vue": "[[@{/js/vuejs-3.2.41/vue.esm-browser.js}]]"
+	}
+}
+</script>
+</head>
+
+<body>
+  <div id="app">
+    <div class="container">
+
+      <div class="row">
+
+        <div class="col-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">메뉴</h5>
+
+              <ul>
+                <tree-menu :prop-obj="rootMenu"></tree-menu>
+              </ul>
+
+            </div>
+          </div>
+        </div> <!-- col-4 -->
+
+        <div class="col-8">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">수정,저장</h5>
+
+              <form>
+                <div class="mb-3">
+                  <label for="menuId" class="form-label">id</label>
+                  <!-- form-control-plaintext -->
+                  <input disabled id="menuId" type="text" class="form-control form-control-sm"/>
+                </div>
+                <div class="mb-3">
+                  <label for="menuName" class="form-label">name</label>
+                  <input id="menuName" type="text" class="form-control form-control-sm"/>
+                </div>
+                <div class="mb-3">
+                  <label for="menuUrl" class="form-label">url</label>
+                  <input id="menuUrl" type="text" class="form-control form-control-sm"/>
+                </div>
+                <div class="mb-3">
+                  <label for="menuOrder" class="form-label">order</label>
+                  <input id="menuOrder" type="number" class="form-control form-control-sm"/>
+                </div>
+              </form>
+
+            </div>
+          </div>
+        </div> <!-- col-8 -->
+
+      </div> <!-- row -->
+
+    </div> <!-- container -->
+  </div> <!-- app -->
+
+  <script type="module">
+    import { createApp, ref } from 'vue';
+    import TreeMenu from '[[@{/js/vuejs-component/TreeMenu.js}]]';
+
+    const app = createApp({
+      components: {
+        TreeMenu
+      },
+      data() {
+        return {
+          rootMenu: {},
+          selectedMenu: {},
+        }
+      },
+      mounted() {
+        this.fetchRootMenu();
+      },
+      methods: {
+        async fetchRootMenu() {
+          const res = await fetch('[[@{/rootMenu}]]');
+          if (res.ok) {
+            const body = await res.json();
+            this.rootMenu = body.data;
+            console.log('this.rootMenu: ', this.rootMenu);
+          } else {
+            res.json().then(body => Swal.fire({ text: body.message, icon: "error" }));
+          }
+        },
+      },
+    });
+
+    app.mount('#app')
+  </script>
+</body>
+
+</html>

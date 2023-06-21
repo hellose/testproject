@@ -1,0 +1,70 @@
+<!doctype html>
+<!-- <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"> -->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Watchers</title>
+
+  <link rel="icon" href="data:,">
+
+  <script type="importmap">
+{
+	"imports": {
+		"vue": "[[@{/js/vuejs-3.2.41/vue.esm-browser.js}]]"
+	}
+}
+</script>
+</head>
+
+<body>
+
+  <div id="app">
+    <p>
+      Ask a yes/no question: <input v-model="question" />
+    </p>
+    <p>{{ answer }}</p>
+  </div>
+
+  <script type="module">
+    import { createApp } from 'vue';
+
+    const app = createApp({
+      data() {
+        return {
+          question: '',
+          answer: 'Questions usually contain a question mark. ;-)',
+        }
+      },
+      watch: {
+        // whenever question changes, this function will run
+        question(newQuestion, oldQuestion) {
+          console.log('question watcher run');
+          if (newQuestion.includes('?')) {
+            this.getAnswer()
+          }
+        }
+      },
+      mounted() {
+      },
+      methods: {
+        async getAnswer() {
+          this.answer = 'Thinking...'
+          try {
+            const res = await fetch('https://yesno.wtf/api')
+            this.answer = (await res.json()).answer
+          } catch (error) {
+            this.answer = 'Error! Could not reach the API. ' + error
+          }
+        },
+      },
+    });
+    app.mount('#app');
+
+  </script>
+
+</body>
+
+</html>

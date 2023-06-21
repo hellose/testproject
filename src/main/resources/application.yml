@@ -15,11 +15,19 @@ spring:
     url: jdbc:postgresql://localhost:5432/etl?options=-c%20search_path=testproject
     username: postgres
     password: 1234
+#  datasource:
+#    url: jdbc:h2:~/testproject
+#    username: sa
+#    password:    
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: update
     properties.hibernate.format_sql: true
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2
   thymeleaf:
     cache: false
   devtools.livereload.enabled: true
@@ -42,11 +50,21 @@ spring:
     url: jdbc:postgresql://localhost:5432/etl?options=-c%20search_path=testproject
     username: postgres
     password: 1234
+#  datasource:
+#    url: jdbc:h2:~/testproject
+#    username: sa
+#    password:        
   jpa:
     show-sql: true
     hibernate:
+#      ddl-auto: create
       ddl-auto: update
+#      ddl-auto: create-drop
     properties.hibernate.format_sql: true
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2    
   thymeleaf:
     cache: false
   devtools.livereload.enabled: true
