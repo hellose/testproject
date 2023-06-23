@@ -9,17 +9,17 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RestApiResponse {
+public class ApiResponse {
 
 	private Boolean success;
 	private Object data;
 	private String message;
 
-	public static RestApiResponse dataWithTrue(Object data) {
-		return new RestApiResponse(true, data, null);
+	public static ApiResponse dataWithTrue(Object data) {
+		return new ApiResponse(true, data, null);
 	}
 
-	public static RestApiResponse messageWithFalse(String message) {
-		return new RestApiResponse(false, null, message);
+	public static ApiResponse messageWithFalse(String message) {
+		return new ApiResponse(false, null, message);
 	}
 }

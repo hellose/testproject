@@ -30,47 +30,131 @@
 
       <div class="row">
 
+        <!-- 메뉴 트리 -->
         <div class="col-4">
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">메뉴</h5>
-
               <ul>
-                <tree-menu :prop-obj="rootMenu"></tree-menu>
+                <tree-menu :prop-menu-obj="this.rootMenu"></tree-menu>
               </ul>
-
             </div>
           </div>
-        </div> <!-- col-4 -->
+        </div>
 
-        <div class="col-8">
+        <!-- 메뉴 수정/삭제 -->
+        <div class="col-4">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">수정,저장</h5>
-
-              <form>
-                <div class="mb-3">
-                  <label for="menuId" class="form-label">id</label>
-                  <!-- form-control-plaintext -->
-                  <input disabled id="menuId" type="text" class="form-control form-control-sm"/>
+              <form @submit.prevent="submitEditMenuForm">
+                <div class="row mb-3">
+                  <div class="col-6">
+                    <h5 class="header-title">메뉴 수정/삭제</h4>
+                  </div>
+                  <div class="col-6 text-end">
+                    <button type="submit" class="btn btn-primary" :disabled="!isEditFormInputActivated">수정</button>
+                    <button type="button" class="btn btn-primary" :disabled="!isEditFormInputActivated" @click="deleteMenuButtonClick">삭제</button>
+                  </div>
                 </div>
-                <div class="mb-3">
-                  <label for="menuName" class="form-label">name</label>
-                  <input id="menuName" type="text" class="form-control form-control-sm"/>
+                <div class="row mb-2">
+                  <label class="col-4 col-form-label">메뉴ID</label>
+                  <div class="col-8">
+                    <input class="form-control" id="editInputMenuId" type="text" v-model="editMenu.menuId" disabled />
+                  </div>
                 </div>
-                <div class="mb-3">
-                  <label for="menuUrl" class="form-label">url</label>
-                  <input id="menuUrl" type="text" class="form-control form-control-sm"/>
+                <div class="row mb-2">
+                  <label class="col-4 col-form-label">메뉴명</label>
+                  <div class="col-8">
+                    <input class="form-control" id="editInputMenuName" type="text" v-model="editMenu.menuName" maxlength="60" required="required" :disabled="!isEditFormInputActivated" />
+                  </div>
                 </div>
-                <div class="mb-3">
-                  <label for="menuOrder" class="form-label">order</label>
-                  <input id="menuOrder" type="number" class="form-control form-control-sm"/>
+                <div class="row mb-2">
+                  <label class="col-4 col-form-label">메뉴 URL</label>
+                  <div class="col-8">
+                    <input class="form-control" id="editInputMenuUrl" type="text" v-model="editMenu.menuUrl" maxlength="60" required="required" :disabled="!isEditFormInputActivated" />
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <label class="col-4 col-form-label">메뉴 순서</label>
+                  <div class="col-8">
+                    <input class="form-control" id="editInputMenuOrder" type="number" :disabled="!isEditFormInputActivated" v-model.number="editMenu.menuOrder" maxlength="4" required="required"
+                      oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" />
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <label class="col-4 col-form-label">출력여부</label>
+                  <div class="col-8 align-self-center">
+                    <input class="form-check-input" id="editMenuUse" type="radio" name="editMenuUseStateGroup" v-model="editMenu.useState" value="Y" :disabled="!isEditFormInputActivated">
+                    <span class="form-check-label me-3" for="editMenuUse">출력</span>
+                    <input class="form-check-input" id="editMenuNotUse" type="radio" name="editMenuUseStateGroup" v-model="editMenu.useState" value="N" :disabled="!isEditFormInputActivated">
+                    <span class="form-check-label" for="editMenuNotUse">출력안함</span>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <label class="col-4 col-form-label" for="editMenuParentMenuSelect">상위 메뉴</label>
+                  <div class="col-8">
+                    <!-- editMenu의 parentMenu 객체가 없으면 v-model에서 menuId 에러 -->
+                    <select id="editMenuParentMenuSelect" class="form-select" v-model="editMenu.parentMenu.menuId" :disabled="!isEditFormInputActivated">
+                      <option v-for="(idName, index) in menuIdNames" :key="idName.menuId" :value="idName.menuId">{{ idName.menuName }}</option>
+                    </select>
+                  </div>
                 </div>
               </form>
-
             </div>
           </div>
-        </div> <!-- col-8 -->
+        </div>
+
+        <!-- 하위 메뉴 추가 -->
+        <div class="col-4">
+          <div class="card">
+            <div class="card-body">
+              <form @submit.prevent="submitAddMenuForm">
+                <div class="row mb-3">
+                  <div class="col-6">
+                    <h5 class="header-title">하위 메뉴 추가</h4>
+                  </div>
+                  <div class="col-6 text-end">
+                    <button type="submit" class="btn btn-primary" :disabled="!isAddFormInputActivated">저장</button>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <label class="col-4 col-form-label">메뉴명</label>
+                  <div class="col-8">
+                    <input class="form-control" id="addInputMenuName" type="text" v-model="addMenu.menuName" maxlength="60" required="required" :disabled="!isAddFormInputActivated" />
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <label class="col-4 col-form-label">메뉴 URL</label>
+                  <div class="col-8">
+                    <input class="form-control" id="addInputMenuUrl" type="text" v-model="addMenu.menuUrl" maxlength="60" required="required" :disabled="!isAddFormInputActivated" />
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <label class="col-4 col-form-label">메뉴 순서</label>
+                  <div class="col-8">
+                    <input class="form-control" id="addInputMenuOrder" type="number" :disabled="!isAddFormInputActivated" v-model.number="addMenu.menuOrder" maxlength="4" required="required"
+                      oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" />
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <label class="col-4 col-form-label">출력여부</label>
+                  <div class="col-8 align-self-center">
+                    <input class="form-check-input" id="addMenuUse" type="radio" name="addMenuUseStateGroup" v-model="addMenu.useState" value="Y" :disabled="!isAddFormInputActivated">
+                    <span class="form-check-label me-3" for="addMenuUse">출력</span>
+                    <input class="form-check-input" id="addMenuNotUse" type="radio" name="addMenuUseStateGroup" v-model="addMenu.useState" value="N" :disabled="!isAddFormInputActivated">
+                    <span class="form-check-label" for="addMenuNotUse">출력안함</span>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <label class="col-4 col-form-label">상위 메뉴ID</label>
+                  <div class="col-8">
+                    <input class="form-control" id="addInputMenuParentMenu" type="text" v-model="addMenu.parentMenu.menuId" disabled />
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
 
       </div> <!-- row -->
 
@@ -87,20 +171,138 @@
       },
       data() {
         return {
+          // 메뉴 데이터
           rootMenu: {},
-          selectedMenu: {},
+
+          // 메뉴 수정
+          editMenu: {
+            parentMenu: {},
+          },
+          menuIdNames: [],
+
+          // 메뉴 추가
+          addMenu: {
+            parentMenu: {},
+          },
+
+          // 메뉴 삭제
+          deleteMenu: {},
+        }
+      },
+      computed: {
+        isEditFormInputActivated() {
+          if (this.editMenu && this.editMenu.menuId && (this.editMenu.menuId >= 1)) {
+            return true;
+          }
+          return false;
+        },
+        isAddFormInputActivated() {
+          if (this.addMenu && this.addMenu.parentMenu && (this.addMenu.parentMenu.menuId >= 1)) {
+            return true;
+          }
+          return false;
         }
       },
       mounted() {
-        this.fetchRootMenu();
+        this.fetchData();
       },
       methods: {
-        async fetchRootMenu() {
-          const res = await fetch('[[@{/rootMenu}]]');
+        // 화면 데이터
+        async fetchData() {
+          const res = await fetch('[[@{/menus}]]');
           if (res.ok) {
             const body = await res.json();
-            this.rootMenu = body.data;
-            console.log('this.rootMenu: ', this.rootMenu);
+            const menuData = body.data;
+
+            this.menuIdNames = menuData.menuIdNames;
+            // console.log('this.menuIdNames: ', this.menuIdNames);
+            menuData.menuIdNames = undefined;
+
+            this.rootMenu = menuData;
+            // console.log('this.rootMenu: ', this.rootMenu);
+          } else {
+            res.json().then(body => Swal.fire({ text: body.message, icon: "error" }));
+          }
+        },
+
+        // 메뉴 수정
+        submitEditMenuForm() {
+          // console.log('submitEditMenu');
+          console.log(JSON.stringify(this.editMenu));
+          this.menuUpdate();
+        },
+        async menuUpdate() { //메뉴 수정
+          const res = await fetch(`[[@{/menu}]]`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(this.editMenu),
+          });
+          if (res.ok) {
+            this.editMenu = {
+              parentMenu: {},
+            };
+            Swal.fire({ text: "수정 되었습니다.", icon: "success" }).then((result) => {
+              if (result.isConfirmed || result.isDismissed) {
+                window.location.reload(true);
+              }
+            });
+          } else {
+            res.json().then(body => Swal.fire({ text: body.message, icon: "error" }));
+          };
+        },
+
+        //메뉴 추가
+        submitAddMenuForm() {
+          console.log(JSON.stringify(this.addMenu));
+          this.menuInsert();
+        },
+        async menuInsert() { //메뉴 추가
+          const res = await fetch(`[[@{/menu}]]`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(this.addMenu),
+          });
+          if (res.ok) {
+            this.addMenu = {
+              parentMenu: {},
+            };
+            Swal.fire({ text: "추가 되었습니다.", icon: "success" }).then((result) => {
+              if (result.isConfirmed || result.isDismissed) {
+                window.location.reload(true);
+              }
+            });
+          } else {
+            res.json().then(body => Swal.fire({ text: body.message, icon: "error" }));
+          }
+        },
+
+        //메뉴 삭제
+        deleteMenuButtonClick() {
+          // console.log('deleteMenuButtonClick');
+          const tempDeleteMenu = {};
+          tempDeleteMenu.menuId = this.editMenu.menuId;
+          this.deleteMenu = tempDeleteMenu;
+          this.menuDelete();
+        },
+        async menuDelete() { //메뉴 삭제
+          const res = await fetch(`[[@{/menu}]]`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(this.deleteMenu),
+          });
+          if (res.ok) {
+            this.deleteMenu = {};
+            Swal.fire({ text: "삭제 되었습니다.", icon: "success" }).then((result) => {
+              if (result.isConfirmed || result.isDismissed) {
+                window.location.reload(true);
+              }
+            });
           } else {
             res.json().then(body => Swal.fire({ text: body.message, icon: "error" }));
           }

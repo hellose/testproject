@@ -4,7 +4,7 @@ logging:
       hibernate:
         type: trace
     study:
-      testproject: debug
+      testproject: trace
 server:
   port: 8081
 spring:
@@ -19,6 +19,10 @@ spring:
 #    url: jdbc:h2:~/testproject
 #    username: sa
 #    password:    
+  quartz:
+    job-store-type: "jdbc"
+    jdbc:
+      initialize-schema: "always"
   jpa:
     show-sql: true
     hibernate:
@@ -39,7 +43,7 @@ logging:
       hibernate:
         type: trace
     study:
-      testproject: debug
+      testproject: trace
 server:
   port: 8081
 spring:
@@ -54,11 +58,15 @@ spring:
 #    url: jdbc:h2:~/testproject
 #    username: sa
 #    password:        
+  quartz:
+    job-store-type: "jdbc"
+    jdbc:
+      initialize-schema: "always"
   jpa:
     show-sql: true
     hibernate:
-#      ddl-auto: create
-      ddl-auto: update
+      ddl-auto: create
+#      ddl-auto: update
 #      ddl-auto: create-drop
     properties.hibernate.format_sql: true
 #  h2:

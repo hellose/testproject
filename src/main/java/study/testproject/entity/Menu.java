@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -41,16 +42,15 @@ public class Menu extends DateAudit{
 	
 	private Integer menuOrder;
 	
-	//TODO useState가 'Y'인것만 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private UseState useState;
 
-	@ManyToOne
+//	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parentMenuId")
 	private Menu parentMenu;
 
-//	@OrderBy(value = "menu_order desc")
 	@OrderBy(value = "menu_order asc")
 	@OneToMany(mappedBy = "parentMenu")
 	private List<Menu> childMenus;

@@ -58,5 +58,21 @@ public class MenuMapper {
 		}
 		return menuDtoList;
 	}
+	
+	public Menu toEntityExcludeEntity(MenuDto dto) {
+		if (dto == null) {
+			return null;
+		}
+		
+		Menu menu = new Menu();
+		
+		menu.setMenuId(dto.getMenuId());
+		menu.setMenuName(dto.getMenuName());
+		menu.setMenuUrl(dto.getMenuUrl());
+		menu.setMenuOrder(dto.getMenuOrder());
+		menu.setUseState(dto.getUseState());
+		
+		return menu;
+	}
 
 }
