@@ -39,8 +39,11 @@ public class MenuService {
 		}
 
 		int count = list.size();
-		if ((count == 0) || (count > 1)) {
-			throw new RuleViolationException("최상위 메뉴가 없거나 두개 이상입니다.");
+		if (count > 1) {
+			throw new RuleViolationException("루트 메뉴는 하나만 있어야합니다.");
+		}
+		if (count == 0) {
+			throw new RuleViolationException("DB에서 루트 메뉴를 등록해주세요.");
 		}
 
 		Menu root = list.get(0);

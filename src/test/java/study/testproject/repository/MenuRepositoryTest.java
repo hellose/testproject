@@ -37,38 +37,15 @@ public class MenuRepositoryTest {
 	@Autowired
 	private ObjectMapper objectMapper; 
 	
-	// ddl: create
 	@Test
-	@DisplayName("실제 Menu insert")
-	void insertRealMenu() {
-		//root 메뉴
+	void insertRootMenu() {
 		Menu root = Menu.builder()
-						.menuName("Root")
-						.menuUrl(null)
-						.menuOrder(1)
-						.useState(UseState.Y)
-						.build();
-		repo.save(root);
-		
-		//quartz 메뉴
-		Menu quartz = Menu.builder()
-							.menuName("quartz")
-							.menuUrl("/quartz")
-							.menuOrder(2)
-							.useState(UseState.Y)
-							.parentMenu(root)
-							.build();
-		repo.save(quartz);
-		
-		//etl 메뉴
-		Menu etl = Menu.builder()
-				.menuName("etl")
-				.menuUrl("/etl")
-				.menuOrder(2)
+				.menuName("Demo")
+				.menuUrl("/")
+				.menuOrder(1)
 				.useState(UseState.Y)
-				.parentMenu(root)
 				.build();
-		repo.save(etl);
+		repo.save(root);
 	}
 	
 	@Test
